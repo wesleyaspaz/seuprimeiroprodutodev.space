@@ -1,531 +1,512 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seu Primeiro Produto Dev - O Jogo</title>
-    <!-- Importa a fonte Inter -->
+    <title>Seu Primeiro Produto Dev - O Tutorial</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuração do Tailwind para usar a fonte "Inter" -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <!-- Importa a fonte Inter do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- CSS 100% Puro e Autocontido -->
     <style>
-        /* --- Configuração Global --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Impede a rolagem da página */
-        }
+        /* Estilo base para garantir a fonte Inter */
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0e1a; /* Fundo azul-escuro */
-            color: #e5e7eb; /* Texto cinza-claro */
-            line-height: 1.6;
         }
-
-        /* --- Container da Apresentação --- */
-        .presentation-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        /* --- Barra de Progresso (Gamificação) --- */
-        .progress-bar-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background-color: #1f2937; /* Fundo da barra */
-            z-index: 30;
-        }
-        #progress-bar-fill {
-            width: 0%; /* Começa em 0 */
-            height: 100%;
-            background-color: #22c55e; /* Verde progresso */
-            transition: width 0.4s ease-out;
-        }
-
-        /* --- Slides --- */
-        .slide {
-            width: 100%;
-            height: 100%;
-            padding: 4rem 2rem;
-            display: none; /* Escondido por padrão */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-            opacity: 0;
-            transform: scale(0.98);
-            overflow-y: auto; /* Permite rolagem se o conteúdo for muito grande no mobile */
-        }
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            transform: scale(1);
-            z-index: 10;
-        }
-
-        /* --- Estilos de Conteúdo dos Slides --- */
-        .slide h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #60a5fa, #5eead4);
+        /* Efeito de gradiente animado para o título principal */
+        .animated-gradient {
+            background: linear-gradient(90deg, #34d399, #10b981, #2dd4bf, #34d399);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-fill-color: transparent;
+            color: transparent;
+            animation: gradient-flow 6s ease-in-out infinite;
         }
-        .slide h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 2rem;
-            max-width: 800px;
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .slide h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #5eead4; /* Cyan */
-            margin-bottom: 1rem;
+        /* Efeito de "aurora" no fundo do hero */
+        .hero-bg {
+            position: relative;
+            overflow: hidden;
         }
-        .slide p {
-            font-size: 1.125rem;
-            max-width: 700px;
-            margin-bottom: 1rem;
-            color: #d1d5db;
-        }
-        .slide strong {
-            color: #ffffff;
-            font-weight: 600;
-        }
-        .slide code {
-            background: #374151; 
-            padding: 3px 6px; 
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        .slide img {
-            border: 1px solid #374151;
-            border-radius: 8px;
-            margin-top: 1rem;
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* --- Helpers de Layout e Cor --- */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 1000px;
-            margin-top: 2rem;
-        }
-        .card {
-            background-color: #1f2937;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid #374151;
-            text-align: left;
-            transition: all 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #2563eb;
-        }
-        .card h4 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.75rem;
-        }
-        .card ul {
-            padding-left: 1.25rem;
-        }
-        .card li {
-            margin-bottom: 0.5rem;
-            color: #d1d5db;
-        }
-        
-        .text-red { color: #f87171; }
-        .text-green { color: #4ade80; }
-        .text-blue { color: #60a5fa; }
-        .text-cyan { color: #5eead4; }
-
-        /* --- Controles de Navegação --- */
-        .nav-controls {
+        .hero-bg::before {
+            content: '';
             position: absolute;
-            bottom: 2rem;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            display: flex;
-            gap: 1rem;
-        }
-        .nav-controls button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        .nav-controls button:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-2px);
-        }
-        .nav-controls button:disabled {
-            background-color: #374151;
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: translateY(0);
-        }
-
-        /* --- Contador de Slides --- */
-        #slide-counter {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 20;
-            background-color: rgba(0, 0, 0, 0.3);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        /* --- Responsividade --- */
-        @media (max-width: 768px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .slide {
-                padding: 4rem 1.5rem 6rem 1.5rem; /* Mais padding em baixo para nav */
-            }
-            .slide h1 {
-                font-size: 2.25rem;
-            }
-            .slide h2 {
-                font-size: 1.75rem;
-            }
-            .slide p {
-                font-size: 1rem;
-            }
-            .nav-controls {
-                bottom: 1rem;
-            }
-            #slide-counter {
-                top: 1rem;
-                right: 1rem;
-            }
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(20, 83, 45, 0.3), transparent 70%);
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.5;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-300 font-inter antialiased">
 
-    <div class="presentation-container">
+    <!-- Cabeçalho de Navegação -->
+    <header class="bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/10">
+        <nav class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="#" class="text-xl font-bold text-white">
+                    Seu<span class="text-green-400">Primeiro</span>Produto<span class="text-green-400">Dev</span>.space
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#problema" class="text-slate-300 hover:text-green-400 transition duration-300">O Problema</a>
+                    <a href="#stack" class="text-slate-300 hover:text-green-400 transition duration-300">O Stack</a>
+                    <a href="#processo" class="text-slate-300 hover:text-green-400 transition duration-300">O Processo</a>
+                    <a href="#comece" class="bg-green-500 hover:bg-green-600 text-slate-900 font-bold py-2 px-4 rounded-lg transition duration-300">Comece Agora</a>
+                </div>
+                <!-- Botão de Menu Mobile (simplificado) -->
+                <div class="md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-        <!-- Barra de Progresso -->
-        <div class="progress-bar-container">
-            <div id="progress-bar-fill"></div>
-        </div>
-
-        <!-- Contador -->
-        <div id="slide-counter">1 / 13</div>
-
-        <!-- Navegação -->
-        <div class="nav-controls">
-            <button id="prev-btn">Anterior</button>
-            <button id="next-btn">Próximo</button>
-        </div>
-
-        <!-- Slide 1: Título -->
-        <section class="slide active">
-            <h1>Seu Primeiro Produto Dev</h1>
-            <p style="font-size: 1.5rem;">Stack 100% Free Tier, desde Chromebook até Cloud</p>
-            <p style="margin-top: 2rem; font-size: 1rem; color: #9ca3af;">Clique em "Próximo" para começar o tutorial.</p>
+    <!-- Seção Hero -->
+    <main class="relative z-10">
+        <section class="min-h-screen flex items-center justify-center text-center px-6 py-20 hero-bg">
+            <div class="relative z-10 max-w-4xl">
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6">
+                    Seu Primeiro <span class="animated-gradient">Produto Dev</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-400 mb-10">
+                    O guia completo para criar e vender sites profissionais com <span class="text-white font-medium">Custo Zero</span>. De um Chromebook direto para a Nuvem.
+                </p>
+                <a href="#problema" class="bg-green-500 hover:bg-green-600 text-slate-900 font-bold py-3 px-8 rounded-lg text-lg transition duration-300 transform hover:scale-105">
+                    Descubra o Caminho
+                </a>
+            </div>
         </section>
 
-        <!-- Slide 2: O Problema -->
-        <section class="slide">
-            <h2>O Problema</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h4>O Problema (do Cliente)</h4>
-                    <p class="text-red" style="font-size: 2rem; font-weight: 800;">R$ 10k+</p>
-                    <p>Agências tradicionais cobram fortunas.</p>
-                    <p style="margin-top: 1rem;"><strong>Resultado:</strong> 80% dos pequenos negócios abrem mão de ter um site profissional.</p>
+        <!-- Seção: O Problema -->
+        <section id="problema" class="py-20 px-6 max-w-5xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 text-white">
+                O <span class="text-green-400">Problema</span> Duplo
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Problema do Cliente -->
+                <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-red-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                        </svg>
+                        <h3 class="text-2xl font-bold text-white">Para o Cliente Final</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4">
+                        Agências tradicionais cobram <span class="text-red-400 font-bold">R$ 10.000+</span> por um site, um custo proibitivo para pequenos negócios.
+                    </p>
+                    <p class="text-slate-300 font-medium">Resultado: 80% dos negócios usam plataformas limitadas ou simplesmente desistem de ter uma presença online profissional.</p>
                 </div>
-                <div class="card">
-                    <h4>O Problema (do Dev Iniciante)</h4>
-                    <p><strong>Paralisia por Análise:</strong> "Por onde começar? React? Node? AWS? É muita coisa!"</p>
-                    <p style="margin-top: 1rem;"><strong>O Mito do Setup Caro:</strong> "Preciso de um Mac de R$ 15.000 para ser dev."</p>
-                    <p style="margin-top: 1rem;"><strong>Resultado:</strong> Frustração e procrastinação.</p>
+                
+                <!-- Card 2: Problema do Dev -->
+                <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-yellow-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                        </svg>
+                        <h3 class="text-2xl font-bold text-white">Para o Dev Iniciante</h3>
+                    </div>
+                    <ul class="space-y-3 text-slate-400 list-inside">
+                        <li><strong class="text-yellow-400">Paralisia por Análise:</strong> "React? Node? AWS? É muita coisa!"</li>
+                        <li><strong class="text-yellow-400">O Mito do Setup Caro:</strong> "Preciso de um Mac de R$ 15.000."</li>
+                        <li><strong class="text-yellow-400">Complexidade Desnecessária:</strong> "Todo projeto precisa de um backend."</li>
+                    </ul>
+                    <p class="text-slate-300 font-medium mt-4">Resultado: Frustração, procrastinação e desistência antes mesmo de começar.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 3: A Oportunidade -->
-        <section class="slide">
-            <h2>A Oportunidade: Sua 1ª Oferta</h2>
-            <h1 class="text-green" style="font-size: 4rem; margin: 0;">R$ 300+</h1>
-            <p style="font-size: 1.25rem; color: #d1d5db;">Sua 1ª Oferta (95%+ Economia)</p>
-            <p style="margin-top: 2rem; max-width: 600px;"><strong>Sua Solução:</strong> Oferecemos websites profissionais, rápidos, seguros e 100% personalizados por uma fração do custo. Entregues em 1-2 semanas.</p>
-        </section>
-
-        <!-- Slide 4: Diferencial 1: Gemini -->
-        <section class="slide">
-            <h2>Diferencial 1: Google Gemini Pro</h2>
-            <img src="https://placehold.co/700x350/1f2937/9ca3af?text=Sua+Captura+de+Tela+do+Gemini+Pro+Grátis" alt="Gemini Pro para Estudantes" style="max-height: 350px;">
-            <h3 style="margin-top: 1.5rem;">IA Avançada do Google: Gera HTML5, CSS responsivo e JavaScript funcional.</h3>
-            <p><strong>Processo Ágil:</strong> 1. Prompt Estruturado → 2. Gemini Gera Base → 3. Você Refina.</p>
-            <p style="margin-top: 1rem; color: #9ca3af;">(Baseado no seu arquivo, estudantes têm 1 ano grátis!)</p>
-        </section>
-
-        <!-- Slide 5: Diferencial 2: Acesso -->
-        <section class="slide">
-            <h2>Diferencial 2: Quebrando o Mito do "PC Caro"</h2>
-            <h3 class="text-red">O Mito: "Preciso de um setup de R$ 5.000 para começar."</h3>
-            <p style="font-size: 1.25rem; margin-top: 1.5rem;"><strong>A Realidade:</strong> Funciona 100% na nuvem. Um Chromebook de R$ 500 ou um PC antigo é suficiente.</p>
-            <p style="margin-top: 1rem;">Tudo que você precisa é de um navegador moderno (Chrome, Firefox, Brave).</p>
-            <p style="font-size: 1.5rem; margin-top: 1.5rem;"><strong class="text-green">O Custo: R$ 0.</strong> Remove a barreira de entrada.</p>
-        </section>
-
-        <!-- Slide 6: A Stack (4 Pilares) -->
-        <section class="slide">
-            <h2>Stack Técnico (Jamstack): 4 Pilares</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h4>Pilar 1: Frontend + IA</h4>
-                    <p>HTML5, CSS3, JS + <strong class="text-blue">Google Gemini</strong> para acelerar a criação.</p>
-                </div>
-                <div class="card">
-                    <h4>Pilar 2: Infra (Custo Zero)</h4>
-                    <p><strong class="text-cyan">GitHub</strong> (Versionamento), <strong class="text-cyan">GitHub Pages</strong> (Hospedagem) e <strong class="text-cyan">Cloudflare</strong> (DNS, CDN, SSL Grátis).</p>
-                </div>
-                <div class="card">
-                    <h4>Pilar 3: Funcionalidades (APIs)</h4>
-                    <p><strong class="text-blue">Formspree</strong> para formulários de contato (grátis) e <strong class="text-blue">Cloudflare Email</strong> (email profissional grátis).</p>
-                </div>
-                <div class="card">
-                    <h4>Pilar 4: Análise (Custo Zero)</h4>
-                    <p><strong class="text-cyan">Google Analytics</strong> (para você) e <strong class="text-cyan">Cloudflare Analytics</strong> (para o cliente).</p>
+        <!-- Seção: A Oportunidade -->
+        <section id="oportunidade" class="py-20 px-6 bg-slate-800 border-y border-slate-700">
+            <div class="max-w-5xl mx-auto text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-green-400 mx-auto mb-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.508 1.333 1.508 2.316V18" />
+                </svg>
+                <h2 class="text-4xl font-bold text-center mb-6 text-white">
+                    A <span class="text-green-400">Oportunidade</span>: Sua Primeira Oferta
+                </h2>
+                <p class="text-2xl text-slate-300 mb-8">
+                    Sua Solução: Websites profissionais, rápidos, seguros e 100% personalizados por uma fração do custo.
+                </p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                    <div class="bg-green-500 text-slate-900 p-8 rounded-xl shadow-2xl w-full md:w-auto">
+                        <div class="text-6xl font-extrabold">R$ 300+</div>
+                        <div class="text-lg font-medium">Sua 1ª Oferta (95%+ Economia)</div>
+                    </div>
+                    <div class="bg-slate-700 text-white p-8 rounded-xl shadow-2xl w-full md:w-auto">
+                        <div class="text-6xl font-extrabold">R$ 10.000+</div>
+                        <div class="text-lg font-medium text-slate-400">Agências Tradicionais</div>
+                    </div>
                 </div>
             </div>
         </section>
         
-        <!-- Slide 7: Fluxo de Setup (Domínio) -->
-        <section class="slide">
-            <h2>Fluxo de Setup: Domínio (Único Custo)</h2>
-            <p>Este é o único custo de todo o projeto, pago pelo cliente.</p>
-            <img src="https://placehold.co/500x180/1f2937/9ca3af?text=Sua+Captura+de+Tela+Hostinger+R$7,08" alt="Custo do Domínio" style="max-height: 200px; margin-top: 1.5rem;">
-            <p style="margin-top: 1.5rem;">Baseado nos seus arquivos, o domínio <strong>`seuprimeiroprodutodev.space`</strong> custou apenas <strong class="text-green">R$ 7,08</strong> na Hostinger.</p>
-        </section>
-
-        <!-- Slide 8: Fluxo de Setup (DNS) -->
-        <section class="slide">
-            <h2>Fluxo de Setup: Conexão DNS</h2>
-            <p>Você vai conectar o Domínio (Hostinger) ao Cloudflare (Grátis).</p>
-            <div class="grid-2">
-                <div class="card">
-                    <h4>1. Cloudflare (Obter Nameservers)</h4>
-                    <p>No Cloudflare, você adiciona o site. Ele te dá 2 Nameservers:</p>
-                    <ul>
-                        <li><code>april.ns.cloudflare.com</code></li>
-                        <li><code>todd.ns.cloudflare.com</code></li>
-                    </ul>
-                    <img src="https://placehold.co/400x200/1f2937/9ca3af?text=Captura+de+Tela+(Cloudflare+Nameservers)" alt="Cloudflare Nameservers" style="margin-top: 1rem;">
+        <!-- Seção: Diferenciais -->
+        <section id="diferenciais" class="py-20 px-6 max-w-5xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 text-white">
+                Seus <span class="text-green-400">Diferenciais</span> Competitivos
+            </h2>
+            <div class="space-y-12">
+                <!-- Diferencial 1: Gemini -->
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-shrink-0 w-32 h-32 bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-green-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-green-400 mb-2">Diferencial 1: Google Gemini Pro</h3>
+                        <p class="text-slate-400 mb-3">A IA avançada do Google gera HTML5, CSS responsivo e JavaScript funcional. Use prompts estruturados para gerar a base do site e depois apenas refine.</p>
+                        <p class="text-white font-medium">Resultado: Código profissional em horas, não em dias. Redução de tempo de 40-50%. E o melhor: <span class="text-green-400">GRATUITO</span> por 1 ano para estudantes.</p>
+                    </div>
                 </div>
-                <div class="card">
-                    <h4>2. Hostinger (Inserir Nameservers)</h4>
-                    <p>No painel da Hostinger, você troca os Nameservers padrão pelos do Cloudflare.</p>
-                    <img src="https://placehold.co/400x200/1f2937/9ca3af?text=Captura+de+Tela+(Hostinger+Painel+DNS)" alt="Hostinger Painel DNS" style="margin-top: 1rem;">
-                    <p style="margin-top: 1rem;">É só isso! Agora o Cloudflare gerencia seu domínio de graça.</p>
+
+                <!-- Diferencial 2: PC Barato -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+                    <div class="flex-shrink-0 w-32 h-32 bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-green-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-7.5 0v-1.5m0-15V3" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-green-400 mb-2">Diferencial 2: Quebrando o Mito do "PC Caro"</h3>
+                        <p class="text-slate-400 mb-3">Você não precisa de um setup de R$ 5.000. Este método funciona 100% na nuvem. Um Chromebook de R$ 500 ou um PC antigo é mais que suficiente.</p>
+                        <p class="text-white font-medium">A Ferramenta: Tudo que você precisa é de um navegador moderno (Chrome, Firefox, Brave). <span class="text-green-400">Custo: R$ 0.</span></p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 9: O Processo -->
-        <section class="slide">
-            <h2>Processo Passo a Passo</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h4>FASE 1: BRIEFING (30 min)</h4>
-                    <p>Conversa com cliente, define objetivo, público-alvo, cores e escopo.</p>
-                </div>
-                <div class="card">
-                    <h4>FASE 2: SETUP (1-2 horas)</h4>
-                    <p>Cliente (guiado por você) cria contas: GitHub, Hostinger (paga domínio), Cloudflare.</p>
-                </div>
-                <div class="card">
-                    <h4>FASE 3: DESENVOLVIMENTO (5-10 dias)</h4>
-                    <p>Você usa Gemini, refina o código, testa em múltiplos dispositivos e faz deploy no GitHub Pages.</p>
-                </div>
-                <div class="card">
-                    <h4>FASE 4: FINALIZAÇÃO (1 dia)</h4>
-                    <p>Configura Formspree, Email Routing, Analytics e entrega (com garantia de 30 dias para bugs).</p>
+        <!-- Seção: O Stack Técnico (4 Pilares) -->
+        <section id="stack" class="py-20 px-6 bg-slate-950/50 border-y border-slate-700">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-6 text-white">
+                    O <span class="text-green-400">Stack Técnico</span> (Jamstack)
+                </h2>
+                <p class="text-lg text-slate-400 text-center mb-16 max-w-3xl mx-auto">
+                    Esta é a arquitetura Jamstack (JavaScript, APIs, Markup). Ela nos dá máxima qualidade, segurança e performance, tudo com <span class="text-white font-bold">zero custos</span>. Cada pilar foi escolhido por ter um plano gratuito 100% funcional.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- Pilar 1: Frontend + IA -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transform transition duration-300 hover:scale-[1.02] hover:border-green-400">
+                        <div class="mb-4">
+                            <span class="inline-block bg-green-900/50 text-green-300 text-sm font-bold px-3 py-1 rounded-full mb-3">Pilar 1</span>
+                            <h3 class="text-2xl font-bold text-white">Frontend + IA (Markup & JS)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>
+                                <span><strong class="text-white">HTML5 & CSS3:</strong> Estrutura semântica e estilos responsivos gerados e otimizados pelo Gemini.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                                <span><strong class="text-white">JavaScript (ES6+):</strong> Interatividade e dinamismo, com código gerado e testado pela IA.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Pilar 2: Infraestrutura -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transform transition duration-300 hover:scale-[1.02] hover:border-green-400">
+                        <div class="mb-4">
+                            <span class="inline-block bg-green-900/50 text-green-300 text-sm font-bold px-3 py-1 rounded-full mb-3">Pilar 2</span>
+                            <h3 class="text-2xl font-bold text-white">Infraestrutura (Custo Zero)</h3>
+                        </div>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                <span><strong class="text-white">GitHub:</strong> Versionamento. O "Google Drive" do seu projeto. Gratuito.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9Z" /></svg>
+                                <span><strong class="text-white">GitHub Pages:</strong> Hospedagem GRATUITA e rápida. Deploy automático com "push".</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591" /></svg>
+                                <span><strong class="text-white">Cloudflare (Free):</strong> DNS, CDN Global e SSL/HTTPS Automático. Seguro, rápido e grátis.</span>
+                            </li>
+                        </ul>
+                        <!-- Diagrama de Fluxo de DNS -->
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                            <h4 class="text-sm font-bold text-white mb-3">Fluxo de Conexão (DNS)</h4>
+                            <code class="text-sm text-slate-400">
+                                <div class="flex flex-col space-y-2">
+                                    <span class="text-blue-300">[1. Registro (Hostinger)]</span>
+                                    <span class="ml-4">Compra o domínio (R$ 40-60/ano)</span>
+                                    <span class="text-center">↓</span>
+                                    <span class="text-orange-300">[2. Gerenciamento (Cloudflare)]</span>
+                                    <span class="ml-4">Aponta o 'Nameserver' para a Cloudflare</span>
+                                    <span class="text-center">↓</span>
+                                    <span class="text-green-300">[3. Hospedagem (GitHub Pages)]</span>
+                                    <span class="ml-4">Cria um CNAME apontando para: <span class="text-white">seu-usuario.github.io</span></span>
+                                </div>
+                            </code>
+                        </div>
+                    </div>
+
+                    <!-- Pilar 3: Funcionalidades -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transform transition duration-300 hover:scale-[1.02] hover:border-green-400">
+                        <div class="mb-4">
+                            <span class="inline-block bg-green-900/50 text-green-300 text-sm font-bold px-3 py-1 rounded-full mb-3">Pilar 3</span>
+                            <h3 class="text-2xl font-bold text-white">Funcionalidades (APIs)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9v.906a2.25 2.25 0 0 1-1.183 1.981l-6.478 3.488M2.25 9v.906c0 .92.59 1.732 1.462 2.043l.817.31c.881.332 1.85.332 2.731 0l.817-.31c.87-.31 1.462-1.123 1.462-2.043V9M21.75 6.375v2.625M2.25 6.375v2.625m0 0v1.125c0 .92.59 1.732 1.462 2.043l.817.31c.881.332 1.85.332 2.731 0l.817-.31c.87-.31 1.462-1.123 1.462-2.043V8.625m-9 0a1.125 1.125 0 0 1-1.125-1.125V6.375m11.25 0V6.375a1.125 1.125 0 0 0-1.125-1.125H4.125A1.125 1.125 0 0 0 3 6.375v1.125m0 0v-1.5m9 1.5v-1.5m-9 0H3m18 0h-1.5m-15 0H3m18 0h-1.5m-15 0H3m18 0h-1.5" /></svg>
+                                <span><strong class="text-white">Formspree:</strong> Captura formulários do site e envia para o email do cliente. Gratuito (50/mês).</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 1 0-2.636 6.364M16.5 12V8.25" /></svg>
+                                <span><strong class="text-white">Cloudflare Email:</strong> Cria email profissional (contato@seudominio.com). Totalmente GRATUITO.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Pilar 4: Análise -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transform transition duration-300 hover:scale-[1.02] hover:border-green-400">
+                        <div class="mb-4">
+                            <span class="inline-block bg-green-900/50 text-green-300 text-sm font-bold px-3 py-1 rounded-full mb-3">Pilar 4</span>
+                            <h3 class="text-2xl font-bold text-white">Análise (Custo Zero)</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m1-3 1 3m0 0h.01M6.75 16.5h.01M17.25 16.5h.01M6.75 16.5l-1 3m1-3 1 3m0 0h.01M17.25 16.5l-1 3m1-3 1 3m0 0h.01M6.75 19.5h10.5" /></svg>
+                                <span><strong class="text-white">Google Analytics (Para o Dev):</strong> Análise profunda de cada visita, de onde veio, quanto tempo ficou, etc. Gratuito.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>
+                                <span><strong class="text-white">Cloudflare Analytics (Para o Cliente):</strong> Dashboard simples e visual. "Quantas pessoas visitaram?". Gratuito e suficiente.</span>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </section>
 
-        <!-- Slide 10: A Entrega Profissional -->
-        <section class="slide">
-            <h2>Detalhe Crucial: A Entrega</h2>
-            <h3 class="text-red">NUNCA crie contas com seu email!</h3>
-            <p>Seu PDF `stack LP web.pdf` dá a dica profissional mais importante:</p>
-            <div class="card" style="max-width: 700px; margin-top: 1.5rem; text-align: left;">
-                <p><strong>A Forma Correta:</strong> Marque uma videochamada de 30 min para "Configuração da Infraestrutura".</p>
-                <ul>
-                    <li><strong>Cliente Faz:</strong> Compartilha a tela, cria as contas (Hostinger, Cloudflare, GitHub) com o email e cartão DELE.</li>
-                    <li><strong>Você Faz:</strong> Guia o processo ("Clique ali", "Escolha essa opção") e faz o setup técnico (aponta DNS, etc).</li>
-                </ul>
-                <p style="margin-top: 1rem;"><strong>Resultado:</strong> O cliente é o dono de tudo. Você é apenas um colaborador. É mais seguro e 1000% mais profissional.</p>
-            </div>
-        </section>
-
-        <!-- Slide 11: Modelo de Negócio -->
-        <section class="slide">
-            <h2>Modelo de Negócio (Iniciante)</h2>
-            <div class="grid-2">
-                <div class="card" style="border-color: #f87171;">
-                    <h4>Seu Custo (Investimento)</h4>
-                    <p style="font-size: 3rem; font-weight: 900;" class="text-red">R$ 0,00</p>
-                    <p>GitHub, Pages, Cloudflare, Gemini, Analytics. TUDO GRATUITO.</p>
-                </div>
-                <div class="card" style="border-color: #4ade80;">
-                    <h4>Seu 1º Lucro (por projeto)</h4>
-                    <p style="font-size: 3rem; font-weight: 900;" class="text-green">R$ 300-600</p>
-                    <p>100% de lucro por projeto. Foco em construir portfólio.</p>
-                </div>
-            </div>
-            <p style="margin-top: 1.5rem;"><strong>Escalabilidade:</strong> 3 projetos/mês = <strong class="text-green">R$ 900-1.800</strong> | 5 projetos/mês = <strong class="text-green">R$ 1.500-3.000</strong></p>
-        </section>
-
-        <!-- Slide 12: Evolução -->
-        <section class="slide">
-            <h2>Próximo Nível (Evolução)</h2>
-            <p>Dominou o básico? Evolua sua stack (ainda no Free Tier):</p>
-            <div class="grid-2" style="max-width: 800px;">
-                <div class="card">
-                    <h4>1. Backend (Python/Flask)</h4>
-                    <p>Crie lógica customizada e APIs próprias. Hospedagem grátis no <strong>Render</strong> ou <strong>Vercel</strong>.</p>
-                    <p style="margin-top: 0.5rem;"><strong>Novo Preço: R$ 2.000+</strong></p>
-                </div>
-                <div class="card">
-                    <h4>2. Banco de Dados</h4>
-                    <p>Armazene dados de usuários com <strong>Supabase</strong> ou <strong>PlanetScale</strong> (ambos têm free tier).</p>
-                </div>
-                <div class="card">
-                    <h4>3. Chatbot com IA</h4>
-                    <p>Integre um FAQ inteligente com <strong>Google Dialogflow</strong> (gratuito).</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 13: Conclusão -->
-        <section class="slide">
-            <h2>Você pode começar HOJE</h2>
-            <div class="grid-2">
-                <div class="card" style="border-color: #f87171;">
-                    <h4>Você NÃO precisa:</h4>
-                    <ul>
-                        <li>❌ Investimento inicial</li>
-                        <li>❌ Computador caro</li>
-                        <li>❌ Experiência em backend</li>
-                        <li>❌ Servidor próprio</li>
-                    </ul>
-                </div>
-                <div class="card" style="border-color: #4ade80;">
-                    <h4>Você SÓ precisa:</h4>
-                    <ul>
-                        <li>✅ Vontade de aprender</li>
-                        <li>✅ Um navegador (Chrome, Firefox)</li>
-                        <li>✅ Google Gemini Pro (Grátis)</li>
-                        <li>✅ 3-5 dias por projeto</li>
-                    </ul>
-                </div>
-            </div>
-            <h1 style="margin-top: 2rem;">Boa sorte!</h1>
-        </section>
-
-    </div>
-
-    <!-- Lógica de Navegação (Puro JS) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Seleciona todos os elementos principais
-            const slides = document.querySelectorAll('.slide');
-            const nextBtn = document.getElementById('next-btn');
-            const prevBtn = document.getElementById('prev-btn');
-            const counter = document.getElementById('slide-counter');
-            const progressBarFill = document.getElementById('progress-bar-fill');
+        <!-- Seção: O Processo -->
+        <section id="processo" class="py-20 px-6 max-w-5xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 text-white">
+                O Processo: <span class="text-green-400">4 Fases</span> Para o Sucesso
+            </h2>
             
-            let currentSlide = 0; // Começa no slide 0 (índice)
-            const totalSlides = slides.length;
+            <!-- Timeline / Lista de Fases -->
+            <div class="relative max-w-2xl mx-auto">
+                <!-- Linha da timeline -->
+                <div class="absolute left-6 md:left-1/2 top-0 h-full w-0.5 bg-slate-700 -translate-x-1/2" aria-hidden="true"></div>
 
-            function showSlide(index) {
-                // 1. Esconde todos os slides
-                slides.forEach(slide => {
-                    slide.classList.remove('active');
-                });
+                <!-- Fase 1: Briefing -->
+                <div class="relative mb-12">
+                    <div class="flex items-center md:justify-normal">
+                        <!-- Icone -->
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 border-2 border-green-400 flex items-center justify-center z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.056 3 12s4.03 8.25 9 8.25Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c-1.657 0-3-1.119-3-2.625S10.343 7.5 12 7.5s3 1.119 3 2.625-1.343 2.625-3 2.625Zm0 0v2.625m0 0c1.657 0 3 1.119 3 2.625s-1.343 2.625-3 2.625-3-1.119-3-2.625 1.343-2.625 3-2.625Z" /></svg>
+                        </div>
+                        <!-- Card -->
+                        <div class="w-full ml-6 md:ml-0 md:w-1/2 md:pl-12">
+                            <div class="bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
+                                <span class="text-sm font-bold text-green-400">FASE 1: BRIEFING (30 min)</span>
+                                <p class="text-slate-300 mt-2">Conversa com cliente sobre objetivo, público-alvo, conteúdo, cores e domínio. O escopo é documentado e acordado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fase 2: Setup -->
+                <div class="relative mb-12">
+                    <div class="flex items-center md:justify-end">
+                        <!-- Icone -->
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 border-2 border-green-400 flex items-center justify-center z-10 md:order-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m18 0h-1.5m-15 0H3m18 0h-1.5m-15 0H3m18 0h-1.5" /></svg>
+                        </div>
+                        <!-- Card -->
+                        <div class="w-full ml-6 md:ml-0 md:w-1/2 md:pr-12 md:order-1 md:text-right">
+                            <div class="bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
+                                <span class="text-sm font-bold text-green-400">FASE 2: SETUP (1-2 horas)</span>
+                                <p class="text-slate-300 mt-2">Cliente cria conta no GitHub, registra o domínio (ex: Hostinger) e cria conta gratuita no Cloudflare, apontando o domínio para ela.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fase 3: Desenvolvimento -->
+                <div class="relative mb-12">
+                    <div class="flex items-center md:justify-normal">
+                        <!-- Icone -->
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 border-2 border-green-400 flex items-center justify-center z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5h10.5v10.5H6.75V7.5Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v18H3V3Z" /></svg>
+                        </div>
+                        <!-- Card -->
+                        <div class="w-full ml-6 md:ml-0 md:w-1/2 md:pl-12">
+                            <div class="bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
+                                <span class="text-sm font-bold text-green-400">FASE 3: DESENVOLVIMENTO (5-10 dias)</span>
+                                <p class="text-slate-300 mt-2">Você usa o Google Gemini Pro para gerar a base do site. Refina, customiza e testa em múltiplos dispositivos. Faz deploy no GitHub Pages (1 clique).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fase 4: Finalização -->
+                <div class="relative mb-12">
+                    <div class="flex items-center md:justify-end">
+                        <!-- Icone -->
+                        <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 border-2 border-green-400 flex items-center justify-center z-10 md:order-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296A3.745 3.745 0 0 1 16.5 21a3.745 3.745 0 0 1-2.864-1.349A3.746 3.746 0 0 1 12 21a3.746 3.746 0 0 1-1.636-.353A3.745 3.745 0 0 1 7.5 21a3.745 3.745 0 0 1-2.864-1.349A3.746 3.746 0 0 1 3 16.5a3.745 3.745 0 0 1 1.043-3.296A3.745 3.745 0 0 1 3 9.75a3.745 3.745 0 0 1 1.349-2.864A3.745 3.745 0 0 1 7.5 3a3.745 3.745 0 0 1 3.296 1.043A3.745 3.745 0 0 1 12 3a3.745 3.745 0 0 1 3.296 1.043A3.745 3.745 0 0 1 16.5 3a3.745 3.745 0 0 1 2.864 1.349A3.746 3.746 0 0 1 21 7.5a3.745 3.745 0 0 1-1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>
+                        </div>
+                        <!-- Card -->
+                        <div class="w-full ml-6 md:ml-0 md:w-1/2 md:pr-12 md:order-1 md:text-right">
+                            <div class="bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700">
+                                <span class="text-sm font-bold text-green-400">FASE 4: FINALIZAÇÃO (1 dia)</span>
+                                <p class="text-slate-300 mt-2">Configura Formspree, Email Routing (Cloudflare) e Google Analytics. Entrega completa com logins e garantia de 30 dias.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Modelo de Negócio -->
+        <section id="negocio" class="py-20 px-6 bg-slate-800 border-y border-slate-700">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16 text-white">
+                    O <span class="text-green-400">Modelo de Negócio</span> (Iniciante)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-slate-900 border-2 border-red-500 p-8 rounded-xl shadow-2xl text-center">
+                        <h3 class="text-2xl font-bold text-white mb-3">Seu Custo</h3>
+                        <p class="text-7xl font-extrabold text-red-500 mb-2">R$ 0,00</p>
+                        <p class="text-slate-400">GitHub, Pages, Cloudflare, Gemini, Analytics. TUDO GRATUITO.</p>
+                    </div>
+                    <div class="bg-slate-900 border-2 border-green-500 p-8 rounded-xl shadow-2xl text-center">
+                        <h3 class="text-2xl font-bold text-white mb-3">Seu 1º Lucro</h3>
+                        <p class="text-7xl font-extrabold text-green-500 mb-2">R$ 300-600</p>
+                        <p class="text-slate-400">100% de lucro por projeto. Foco em construir portfólio.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <h4 class="text-2xl font-bold text-white">Escalabilidade (Iniciante)</h4>
+                    <p class="text-lg text-slate-400 mt-2">3 projetos/mês = <span class="text-green-400">R$ 900-1.800</span>  |  5 projetos/mês = <span class="text-green-400">R$ 1.500-3.000</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Próximos Passos (Evolução) -->
+        <section id="evolucao" class="py-20 px-6 max-w-5xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16 text-white">
+                <span class="text-green-400">Próximos Passos</span>: Evolua Seu Produto
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Evolução 1: Backend -->
+                <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
+                    <h3 class="text-xl font-bold text-white mb-3">1. Backend em Flask</h3>
+                    <p class="text-slate-400">Evolua de um site estático para uma app dinâmica. Crie APIs próprias com Python/Flask. Hospede no Render (Free Tier).
+                    <span class="block text-green-400 font-medium mt-3">Novo preço: R$ 2.000+</span></p>
+                </div>
+                <!-- Evolução 2: BD -->
+                <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
+                    <h3 class="text-xl font-bold text-white mb-3">2. Banco de Dados</h3>
+                    <p class="text-slate-400">Armazene dados de clientes e usuários. Use SQLite para projetos simples ou Supabase/PlanetScale para escalar (ambos com free tier).</p>
+                </div>
+                <!-- Evolução 3: Chatbot -->
+                <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700">
+                    <h3 class="text-xl font-bold text-white mb-3">3. Chatbot com IA</h3>
+                    <p class="text-slate-400">Integre um chatbot inteligente com Google Dialogflow (gratuito) para FAQ e suporte 24/7. Um stack completo, ainda no Free Tier.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: CTA Final -->
+        <section id="comece" class="py-20 px-6 bg-gradient-to-t from-green-900/40 to-slate-900 border-t border-slate-700">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-5xl font-extrabold text-center mb-10 text-white">
+                    Você pode começar <span class="animated-gradient">HOJE</span>
+                </h2>
                 
-                // 2. Mostra o slide atual
-                if (slides[index]) {
-                    slides[index].classList.add('active');
-                }
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <!-- Você NÃO precisa -->
+                    <div class="bg-red-900/30 border border-red-700 p-8 rounded-xl">
+                        <h3 class="text-2xl font-bold text-red-300 mb-6">Você NÃO precisa:</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-red-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                <span>Investimento inicial</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-red-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                <span>Computador caro</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-red-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                <span>Experiência em backend</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-red-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                                <span>Servidor próprio</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Você precisa -->
+                    <div class="bg-green-900/30 border border-green-700 p-8 rounded-xl">
+                        <h3 class="text-2xl font-bold text-green-300 mb-6">Você SÓ precisa:</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-green-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                <span>Vontade de aprender</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-green-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                <span>Um navegador</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-green-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                <span>Google Gemini Pro (Grátis)</span>
+                            </li>
+                            <li class="flex items-center space-x-3 text-lg text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7 text-green-400 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                <span>3-5 dias por projeto</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-                // 3. Atualiza o contador
-                counter.textContent = `${index + 1} / ${totalSlides}`;
-
-                // 4. Atualiza a barra de progresso
-                const progressPercent = ((index + 1) / totalSlides) * 100;
-                progressBarFill.style.width = `${progressPercent}%`;
-
-                // 5. Atualiza os botões
-                prevBtn.disabled = (index === 0);
-                nextBtn.disabled = (index === totalSlides - 1);
-            }
-
-            // Event Listener para "Próximo"
-            nextBtn.addEventListener('click', () => {
-                if (currentSlide < totalSlides - 1) {
-                    currentSlide++;
-                    showSlide(currentSlide);
-                }
-            });
-
-            // Event Listener para "Anterior"
-            prevBtn.addEventListener('click', () => {
-                if (currentSlide > 0) {
-                    currentSlide--;
-                    showSlide(currentSlide);
-                }
-            });
-
-            // Inicialização: Mostra o primeiro slide
-            showSlide(currentSlide);
-        });
-    </script>
+    <!-- Rodapé -->
+    <footer class="bg-slate-950/50 border-t border-slate-700 py-12 px-6">
+        <div class="max-w-6xl mx-auto text-center text-slate-500">
+            <p>&copy; 2025 seuprimeiroprodutodev.space. Todos os direitos reservados.</p>
+            <p class="mt-2 text-sm">Um novo modelo para desenvolvedores e pequenos negócios.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
